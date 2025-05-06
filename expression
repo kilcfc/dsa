@@ -1,0 +1,131 @@
+#include<iostream>
+#include<cstring>
+#include<cctype>
+using namespace std;
+
+struct node{
+    char data;
+    node *left, *right;
+};
+
+class Stack{
+       public:
+    node* s[30];
+    int top;
+    
+    Stack(){
+        top = -1;
+    }
+    
+    bool isEmpty(){
+        return top == -1;
+    }
+    
+    void push(node *p){
+        s[++top]=p;
+    }
+    
+    node* pop(){
+     return  s[top--];
+    }
+};
+
+class tree{
+     public:
+    node *root,*temp;
+  
+    tree(){
+        root = nullptr;
+    }
+    
+    void build(char prefix[]){
+        Stack s;
+        int len = strlen(prefix);
+        for(int i = len-1;i>=0;i--){
+            node* newnode = new node{prefix[i],nullptr,nullptr};
+            
+            if(isalpha(prefix[i])){
+                s.push(newnode);
+            }
+            else if(strchr("+-*/",prefix[i])){
+                node* right = s.pop();
+                node* left = s.pop();
+                newnode->left = left;
+                newnode ->right = right;
+                s.push(newnode);
+            }
+        }root=s.pop();
+    }
+    
+    void postorder(node* node) {
+    if (!node) return;
+
+    Stack s1, s2;
+    s1.push(node);
+
+    while (!s1.isEmpty()) {
+        temp = s1.pop();  // Declare temp here
+        s2.push(temp);
+
+        if (temp->left) {
+            s1.push(temp->left);
+        }
+        if (temp->right) {
+            s1.push(temp->right);
+        }
+    }
+
+    while (!s2.isEmpty()) {
+        cout << s2.pop()->data << " ";
+    }
+}
+
+};
+
+int main() {
+    tree t;
+    char expr[50];
+    int choice;
+
+    do {
+        cout << "\n=== Expression Tree Menu ===\n";
+        cout << "1. Enter Prefix Expression\n";
+        cout << "2. Build Expression Tree\n";
+        cout << "3. Display Postorder Traversal\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore();  // To clear newline from input buffer
+
+        switch (choice) {
+            case 1:
+                cout << "Enter Prefix Expression (no spaces, e.g., -+a*bc/def): ";
+                cin.getline(expr, 50);
+                break;
+
+            case 2:
+                t.build(expr);
+                cout << "Expression Tree Built Successfully.\n";
+                break;
+
+            case 3:
+                if (t.root == nullptr) {
+                    cout << "Tree not built yet. Please build the tree first.\n";
+                } else {
+                    cout << "Postorder Traversal: ";
+                    t.postorder(t.root);
+                    cout << endl;
+                }
+                break;
+
+            case 4:
+                cout << "Exiting...\n";
+                break;
+
+            default:
+                cout << "Invalid choice. Try again.\n";
+        }
+    } while (choice != 4);
+
+    return 0;
+}
