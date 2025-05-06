@@ -1,0 +1,184 @@
+#include <iostream>
+using namespace std;
+
+class Set {
+public:
+    int cnt;
+    int a[10];
+
+    Set() { cnt = 0; }
+
+    void Insert(int);
+    void Display() const;
+    int Contain(int) const;
+    void Size() const;
+    void Remove();
+    void Union(const Set&, const Set&);
+    void Intersection(const Set&, const Set&);
+    void Difference(const Set&, const Set&);
+    void Subset(const Set&, const Set&) const;
+};
+
+void Set::Insert(int n) {
+    cout << "Enter " << n << " elements:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        cnt++;
+    }
+}
+
+void Set::Display() const {
+    for (int i = 0; i < cnt; i++)
+        cout << a[i] << " ";
+    cout << endl;
+}
+
+int Set::Contain(int key) const {
+    for (int i = 0; i < cnt; i++)
+        if (a[i] == key)
+            return i;
+    return -1;
+}
+
+void Set::Size() const {
+    cout << "Size of Set: " << cnt << endl;
+}
+
+void Set::Remove() {
+    int ele;
+    cout << "Enter the element to remove: ";
+    cin >> ele;
+    int index = Contain(ele);
+    if (index != -1) {
+        for (int i = index; i < cnt - 1; i++)
+            a[i] = a[i + 1];
+        cnt--;
+        cout << "Element " << ele << " removed.\n";
+    } else {
+        cout << "Element not found.\n";
+    }
+}
+
+void Set::Union(const Set& s1, const Set& s2) {
+    cnt = 0;
+    for (int i = 0; i < s1.cnt; i++)
+        a[cnt++] = s1.a[i];
+    for (int i = 0; i < s2.cnt; i++)
+        if (s1.Contain(s2.a[i]) == -1)
+            a[cnt++] = s2.a[i];
+}
+
+void Set::Intersection(const Set& s1, const Set& s2) {
+    cnt = 0;
+    for (int i = 0; i < s2.cnt; i++)
+        if (s1.Contain(s2.a[i]) != -1)
+            a[cnt++] = s2.a[i];
+}
+
+void Set::Difference(const Set& s1, const Set& s2) {
+    cnt = 0;
+    for (int i = 0; i < s1.cnt; i++)
+        if (s2.Contain(s1.a[i]) == -1)
+            a[cnt++] = s1.a[i];
+}
+
+void Set::Subset(const Set& s1, const Set& s2) const {
+    int match = 0;
+    for (int i = 0; i < s1.cnt; i++)
+        if (s2.Contain(s1.a[i]) != -1)
+            match++;
+    if (match == s1.cnt)
+        cout << "Set-1 is a subset of Set-2.\n";
+    else
+        cout << "Set-1 is not a subset of Set-2.\n";
+}
+
+void InputSet(Set& s, const string& label) {
+    int n;
+    cout << "Enter number of elements in " << label << ": ";
+    cin >> n;
+    s.Insert(n);
+    cout << label << ": ";
+    s.Display();
+}
+
+int main() {
+    Set obj, s1, s2, s3;
+    int ch;
+
+    do {
+        cout << "\n---- MENU ----\n"
+             << "1. Insert\n2. Display\n3. Search\n4. Size\n5. Remove\n"
+             << "6. Union\n7. Intersection\n8. Difference\n9. Subset\n10. Exit\n"
+             << "Enter your choice: ";
+        cin >> ch;
+
+        switch (ch) {
+        case 1: {
+            int n;
+            cout << "How many elements to insert? ";
+            cin >> n;
+            obj.Insert(n);
+            break;
+        }
+        case 2:
+            cout << "Set Elements: ";
+            obj.Display();
+            break;
+        case 3: {
+            int key;
+            cout << "Enter element to search: ";
+            cin >> key;
+            int pos = obj.Contain(key);
+            if (pos != -1)
+                cout << "Element found at position " << pos + 1 << endl;
+            else
+                cout << "Element not found.\n";
+            break;
+        }
+        case 4:
+            obj.Size();
+            break;
+        case 5:
+            obj.Remove();
+            break;
+        case 6:
+            InputSet(s1, "Set-1");
+            InputSet(s2, "Set-2");
+            s3.Union(s1, s2);
+            cout << "Union: ";
+            s3.Display();
+            break;
+        case 7:
+            InputSet(s1, "Set-1");
+            InputSet(s2, "Set-2");
+            s3.Intersection(s1, s2);
+            cout << "Intersection: ";
+            s3.Display();
+            break;
+        case 8:
+            InputSet(s1, "Set-1");
+            InputSet(s2, "Set-2");
+            s3.Difference(s1, s2);
+            cout << "s1 - s2: ";
+            s3.Display();
+            s3.Difference(s2, s1);
+            cout << "s2 - s1: ";
+            s3.Display();
+            break;
+        case 9:
+            InputSet(s1, "Set-1");
+            InputSet(s2, "Set-2");
+            s3.Subset(s1, s2);
+            break;
+        case 10:
+            cout << "Exiting program...\n";
+            break;
+        default:
+            cout << "Invalid choice. Try again.\n";
+        }
+
+    } while (ch != 10);
+
+    return 0;
+}
