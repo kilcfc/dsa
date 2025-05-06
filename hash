@@ -1,0 +1,85 @@
+#include<iostream>
+using namespace std;
+
+struct hashing{
+    int key;
+    int mob;
+};
+
+class hashtable{
+    public:
+    hashing arr[10];
+    hashtable(){
+      for(int i=0;i<10;i++){
+        arr[i].key=i;
+        arr[i].mob=-1;
+      }  
+    }
+    void insert(int ch){
+        char ans;
+     do{
+
+    
+        cout<<"enter mobile number :"<<endl;
+        int temp;
+        cin>>temp;
+
+        int pos = temp % 10;
+
+        if(arr[pos].mob==-1){
+            arr[pos].mob=temp;
+        }
+        else if(ch == 1){
+            linear(pos,temp);
+        }
+        else if(ch==2){
+            quadratic(pos,temp);
+        }
+        else{
+            cout<<"invalid"<<endl;
+        }
+        cout<<"enter choice(y/n)"<<endl;
+        cin>>ans;
+    }while(ans=='y' || ans == 'Y');
+    }
+
+    void linear(int pos,int temp){
+        int i = pos;
+        do{
+        if(arr[i].mob==-1){
+            arr[i].mob=temp;
+            return ;
+        }
+        i = ( i+1)%10;}while(i !=pos);
+    }
+
+    void quadratic(int pos,int temp){
+        int i=pos;
+        for(int i=0;i<10;i++){
+        int newnode = (i*i)%10;
+            if(arr[i].mob==-1){
+                arr[i].mob=temp;
+                return;
+               }   }
+    }
+
+
+    void display(){
+        for(int i=0;i<10;i++){
+            cout<<"\t"<<arr[i].key<<"\t"<<arr[i].mob<<endl;
+        }
+    }
+};
+
+int main(){
+    hashtable h;
+    int ch;
+    cout<<"1.linear"<<endl;
+    cout<<"2.quadratic"<<endl;
+    cout<<"enter your choice"<<endl;
+    cin>>ch;
+    h.insert(ch);
+    h.display();
+    return 0;
+
+}
