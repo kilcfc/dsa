@@ -1,0 +1,116 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+struct stud {
+    int roll;
+    char name[10];
+    char Div;
+    char addr[10];
+} rec;
+
+class student {
+public:
+    void create();
+    void display();
+    int search();
+};
+
+void student::create() {
+    ofstream fout;
+    fout.open("stud.dat", ios::app | ios::binary); // append mode
+    
+    cout << "Enter roll: ";
+    cin >> rec.roll;
+    cout << "Enter name: ";
+    cin >> rec.name;
+    cout << "Enter division: ";
+    cin >> rec.Div;
+    cout << "Enter address: ";
+    cin >> rec.addr;
+
+    fout.write((char*)&rec, sizeof(stud));
+    fout.close();
+}
+
+void student::display() {
+    ifstream fin;
+    fin.open("stud.dat", ios::in | ios::binary);
+
+    if (!fin) {
+        cout << "File not found!" << endl;
+        return;
+    }
+
+    cout << "\tRoll\tName\tDiv\tAddress" << endl;
+    while (fin.read((char*)&rec, sizeof(stud))) {
+        cout << "\t" << rec.roll << "\t" << rec.name << "\t" << rec.Div << "\t" << rec.addr << endl;
+    }
+    fin.close();
+}
+
+int student::search() {
+    ifstream fin;
+    fin.open("stud.dat", ios::in | ios::binary);
+    if (!fin) {
+        cout << "File not found!" << endl;
+        return -1;
+    }
+
+    int r, i = 0;
+    cout << "Enter roll no to be searched: ";
+    cin >> r;
+
+    while (fin.read((char*)&rec, sizeof(stud))) {
+        if (rec.roll == r) {
+            cout << "Record found:\n";
+            cout << "\t" << rec.roll << "\t" << rec.name << "\t" << rec.Div << "\t" << rec.addr << endl;
+            fin.close();
+            return i;
+        }
+        i++;
+    }
+
+    fin.close();
+    cout << "Record not found." << endl;
+    return -1;
+}
+
+int main() {
+    student s;
+    int ch;
+    char ans;
+
+    do {
+        cout << "\nMENU\n";
+        cout << "1. Create\n";
+        cout << "2. Display\n";
+        cout << "3. Search\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> ch;
+
+        switch (ch) {
+        case 1:
+            s.create();
+            break;
+        case 2:
+            s.display();
+            break;
+        case 3:
+            s.search();
+            break;
+        case 4:
+            cout << "Exiting...\n";
+            break;
+        default:
+            cout << "Invalid choice\n";
+            break;
+        }
+
+        cout << "Do you want to continue? (y/n): ";
+        cin >> ans;
+    } while (ans == 'y' || ans == 'Y');
+
+    return 0;
+}
