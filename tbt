@@ -1,0 +1,103 @@
+#include<iostream>
+using namespace std;
+
+struct Node{
+    int data;
+    Node* left, *right;
+    int lbit,rbit;
+    public:
+    Node(int val = -1){
+        left = right = nullptr;
+        lbit = rbit = 0; 
+    }
+};
+
+class create{
+    
+    Node* root,*head;
+    public:
+    create(){
+        head = new Node();
+        head->left=head;
+        head->right=head;
+        head-> lbit = 0;
+        head->rbit = 1;
+        root = nullptr;
+        
+    }
+    void build(){
+    
+    char ans;
+    
+    
+    root = new Node();
+    cout<<"enter data: "<<endl;
+    cin>>root->data;
+    
+    head->left = root;
+    head ->lbit = 1;
+    root->left=head->left;
+    root->right=head;
+    do{
+    Node* newnode = new Node();
+    cout<<"enter data : "<<endl;\
+    cin>>newnode->data;
+    Node * temp = root;
+    while(true){
+    if(newnode->data < temp->data){
+        if(temp->lbit==0){
+        newnode->left = temp->left;
+                        newnode->right = temp;
+                        temp->left = newnode;
+                        temp->lbit = 1;
+                        break;
+         }
+        else{
+            temp=temp->left;
+        } 
+    }
+    else if(newnode ->data >  temp->data){
+        if(temp->rbit ==0){
+        newnode->right = temp->right;
+                        newnode->left = temp;
+                        temp->right = newnode;
+                        temp->rbit = 1;
+                        break;
+        }
+        else{
+            temp= temp->right;
+        }}
+    else{
+        cout<<"duplicate valuies not allowed"<<endl;
+    }}
+    cout<<"do you want to add more "<<endl;
+    cin>>ans;
+    }while(ans=='y' || ans=='Y');
+    }
+    
+   void preorder() {
+    Node* temp = root;
+
+    while (temp != head) {
+        cout << temp->data << " ";
+
+        if (temp->lbit == 1) {
+            temp = temp->left;
+        } else {
+            while (temp->rbit == 0 && temp->right != head) {
+                temp = temp->right;
+            }
+            temp = temp->right;
+        }
+    }
+}
+
+    };  
+
+
+int main(){
+    create t;
+    t.build();
+    t.preorder();
+    return 0;
+}
