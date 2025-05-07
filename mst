@@ -1,0 +1,114 @@
+#include <iostream>
+using namespace std;
+
+class SNode {
+public:
+    char n1, n2;
+    int wt;
+};
+
+class Graph {
+    int numEdges, numVertices;
+    SNode inputGraph[10], result[10];
+
+public:
+    Graph() {
+        numEdges = 0;
+    }
+
+    void inputSparse();
+    void displaySparse();
+    void bubbleSort();
+    void primsMST();
+    void displayMST();
+};
+
+// Function to read graph edges
+void Graph::inputSparse() {
+    cout << "Enter number of edges: ";
+    cin >> numEdges;
+
+    cout << "Enter number of vertices: ";
+    cin >> numVertices;
+
+    for (int i = 0; i < numEdges; i++) {
+        cout << "Enter 1st vertex: ";
+        cin >> inputGraph[i].n1;
+
+        cout << "Enter 2nd vertex: ";
+        cin >> inputGraph[i].n2;
+
+        cout << "Enter weight: ";
+        cin >> inputGraph[i].wt;
+
+        cout << endl;
+    }
+
+    bubbleSort();
+}
+
+// Function to sort edges by weight
+void Graph::bubbleSort() {
+    for (int i = 0; i < numEdges - 1; i++) {
+        for (int j = 0; j < numEdges - i - 1; j++) {
+            if (inputGraph[j].wt > inputGraph[j + 1].wt) {
+                SNode temp = inputGraph[j];
+                inputGraph[j] = inputGraph[j + 1];
+                inputGraph[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Function to display input edges
+void Graph::displaySparse() {
+    cout << "\nEdges of the graph:\n";
+    for (int i = 0; i < numEdges; i++) {
+        cout << inputGraph[i].n1 << " " << inputGraph[i].n2 << " " << inputGraph[i].wt << endl;
+    }
+}
+
+// Function to find MST using a Prim's-like approach
+void Graph::primsMST() {
+    int m = 1;
+    int count = 1;
+    result[0] = inputGraph[0];
+
+    while (m < numVertices - 1) {
+        for (int i = 1; i < numEdges; i++) {
+            int found1 = 0, found2 = 0;
+
+            for (int j = 0; j < m; j++) {
+                if (inputGraph[i].n1 == result[j].n1 || inputGraph[i].n1 == result[j].n2) {
+                    found1 = 1;
+                }
+                if (inputGraph[i].n2 == result[j].n1 || inputGraph[i].n2 == result[j].n2) {
+                    found2 = 1;
+                }
+            }
+
+            if ((found1 ^ found2) == 1) {  // XOR: one of the nodes is in the MST
+                result[m++] = inputGraph[i];
+                break;
+            }
+        }
+    }
+}
+
+// Function to display MST result
+void Graph::displayMST() {
+    cout << "\nMinimum Spanning Tree Edges:\n";
+    for (int i = 0; i < numVertices - 1; i++) {
+        cout << result[i].n1 << " " << result[i].n2 << " " << result[i].wt << endl;
+    }
+}
+
+int main() {
+    Graph obj;
+    obj.inputSparse();
+    obj.displaySparse();
+    obj.primsMST();
+    obj.displayMST();
+
+    return 0;
+}
