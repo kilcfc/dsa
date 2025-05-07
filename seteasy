@@ -1,0 +1,104 @@
+#include <iostream>
+using namespace std;
+
+class SetOperations {
+    int A[50], B[50], n1, n2;
+
+public:
+    void input() {
+        cout << "Enter number of elements in Set A: ";
+        cin >> n1;
+        cout << "Enter elements of Set A: ";
+        for (int i = 0; i < n1; i++) cin >> A[i];
+
+        cout << "Enter number of elements in Set B: ";
+        cin >> n2;
+        cout << "Enter elements of Set B: ";
+        for (int i = 0; i < n2; i++) cin >> B[i];
+    }
+
+    bool isPresent(int arr[], int size, int key) {
+        for (int i = 0; i < size; i++)
+            if (arr[i] == key) return true;
+        return false;
+    }
+
+    void printArray(int arr[], int size, string label) {
+        cout << label << ": { ";
+        for (int i = 0; i < size; i++) cout << arr[i] << " ";
+        cout << "}\n";
+    }
+
+    void Union() {
+        int result[100], k = 0;
+
+        for (int i = 0; i < n1; i++)
+            result[k++] = A[i];
+
+        for (int i = 0; i < n2; i++)
+            if (!isPresent(result, k, B[i]))
+                result[k++] = B[i];
+
+        printArray(result, k, "Union");
+    }
+
+    void Intersection() {
+        int result[50], k = 0;
+
+        for (int i = 0; i < n1; i++)
+            for (int j = 0; j < n2; j++)
+                if (A[i] == B[j] && !isPresent(result, k, A[i]))
+                    result[k++] = A[i];
+
+        printArray(result, k, "Intersection");
+    }
+
+    void Difference() {
+        int result[50], k = 0;
+
+        for (int i = 0; i < n1; i++)
+            if (!isPresent(B, n2, A[i]))
+                result[k++] = A[i];
+
+        printArray(result, k, "Difference (A - B)");
+    }
+
+    void SymmetricDifference() {
+        int result[100], k = 0;
+
+        for (int i = 0; i < n1; i++)
+            if (!isPresent(B, n2, A[i]))
+                result[k++] = A[i];
+
+        for (int i = 0; i < n2; i++)
+            if (!isPresent(A, n1, B[i]))
+                result[k++] = B[i];
+
+        printArray(result, k, "Symmetric Difference");
+    }
+};
+
+int main() {
+    SetOperations s;
+    int choice;
+
+    s.input();
+
+    do {
+        cout << "\n*** Set Operations Menu ***\n";
+        cout << "1. Union\n2. Intersection\n3. Difference (A - B)\n4. Symmetric Difference\n5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: s.Union(); break;
+            case 2: s.Intersection(); break;
+            case 3: s.Difference(); break;
+            case 4: s.SymmetricDifference(); break;
+            case 5: cout << "Exiting...\n"; break;
+            default: cout << "Invalid choice. Try again.\n";
+        }
+    } while (choice != 5);
+
+    return 0;
+}
