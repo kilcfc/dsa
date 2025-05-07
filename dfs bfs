@@ -1,0 +1,196 @@
+#include #include <iostream>
+using namespace std;
+
+class Graph {
+    int a[20][20], vcnt;
+    int v[20], rcnt;
+
+public:
+    Graph() {
+        vcnt = rcnt = 0;
+    }
+
+    void ad_matrix();
+    void dis_matrix();
+    void BFS(int sv);
+    void DFS(int sv);
+    int search(int key);
+};
+
+// Add adjacency matrix
+void Graph::ad_matrix() {
+    cout << "Enter the number of vertices: ";
+    cin >> vcnt;
+
+    cout << "Enter the adjacency matrix:\n";
+    for (int i = 0; i < vcnt; i++)
+        for (int j = 0; j < vcnt; j++)
+            cin >> a[i][j];
+}
+
+// Display adjacency matrix
+void Graph::dis_matrix() {
+    cout << "Adjacency matrix:\n";
+    for (int i = 0; i < vcnt; i++) {
+        for (int j = 0; j < vcnt; j++)
+            cout << a[i][j] << " ";
+        cout << endl;
+    }
+}
+
+// Search if vertex was visited
+int Graph::search(int key) {
+    for (int i = 0; i < rcnt; i++) {
+        if (v[i] == key)
+            return 1;
+    }
+    return 0;
+}
+
+// Queue class for BFS
+class Queue {
+    int q[20], f, r;
+
+public:
+    Queue() { f = r = 0; }
+
+    void insert(int key) {
+        if (r < 20) q[r++] = key;
+        else cout << "Queue is full\n";
+    }
+
+    int deleteElement() {
+        if (f != r) return q[f++];
+        else {
+            cout << "Queue is empty\n";
+            return -1;
+        }
+    }
+
+    bool isEmpty() {
+        return f == r;
+    }
+};
+
+// Stack class for DFS
+class Stack {
+    int s[20], top;
+
+public:
+    Stack() { top = -1; }
+
+    void push(int key) {
+        if (top < 19) s[++top] = key;
+        else cout << "Stack is full\n";
+    }
+
+    int pop() {
+        if (top != -1) return s[top--];
+        else {
+            cout << "Stack is empty\n";
+            return -1;
+        }
+    }
+
+    bool isEmpty() {
+        return top == -1;
+    }
+};
+
+// BFS using Queue
+void Graph::BFS(int sv) {
+    Queue q1;
+    rcnt = 0;
+    v[rcnt++] = sv;
+    q1.insert(sv);
+
+    cout << "BFS starting from vertex " << sv << ": ";
+    while (!q1.isEmpty()) {
+        int curr = q1.deleteElement();
+        cout << curr << " ";
+
+        for (int c = 0; c < vcnt; c++) {
+            if (a[curr][c] == 1 && search(c) == 0) {
+                v[rcnt++] = c;
+                q1.insert(c);
+            }
+        }
+    }
+    cout << endl;
+}
+
+// DFS using Stack
+void Graph::DFS(int sv) {
+    Stack s1;
+    rcnt = 0;
+    v[rcnt++] = sv;
+    s1.push(sv);
+
+    cout << "DFS starting from vertex " << sv << ": ";
+    while (!s1.isEmpty()) {
+        int curr = s1.pop();
+        cout << curr << " ";
+
+        for (int c = vcnt - 1; c >= 0; c--) {
+            if (a[curr][c] == 1 && search(c) == 0) {
+                v[rcnt++] = c;
+                s1.push(c);
+            }
+        }
+    }
+    cout << endl;
+}
+
+// Main Menu
+int main() {
+    Graph g;
+    int choice, start;
+
+    do {
+        cout << "\n**** Menu ****\n";
+        cout << "1. Add Adjacency Matrix\n";
+        cout << "2. Display Adjacency Matrix\n";
+        cout << "3. BFS (Breadth First Search)\n";
+        cout << "4. DFS (Depth First Search)\n";
+        cout << "5. Search for a Vertex (in last traversal)\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            g.ad_matrix();
+            break;
+
+        case 2:
+            g.dis_matrix();
+            break;
+
+        case 3:
+            cout << "Enter starting vertex for BFS: ";
+            cin >> start;
+            if (start >= 0 && start < 20)
+                g.BFS(start);
+            else
+                cout << "Invalid vertex.\n";
+            break;
+
+        case 4:
+            cout << "Enter starting vertex for DFS: ";
+            cin >> start;
+            if (start >= 0 && start < 20)
+                g.DFS(start);
+            else
+                cout << "Invalid vertex.\n";
+            break;
+
+        case 5:
+            cout << "Enter vertex to search in last traversal: ";
+            cin >> start;
+            if (g.search(start))
+                cout << "Vertex " << start << " was visited.\n";
+            else
+                cout << "Vertex " << start << " was NOT visited.\n";
+            break;
+
+        case 6:
